@@ -29,6 +29,9 @@ public class JewelryController {
     private final LLMService llmService; // nullable — LLM is optional
     private final CatalogueIndexer catalogueIndexer;
 
+    @org.springframework.beans.factory.annotation.Value("${catalogue.path:catalogue/images}")
+    private String cataloguePath;
+
     public JewelryController(
             EmbeddingService embeddingService,
             SearchService searchService,
@@ -42,10 +45,9 @@ public class JewelryController {
 
     @GetMapping("/bulk-index")
     public ResponseEntity<String> bulkIndex() {
-        // Absolute path to the catalogue images
-        String path = "/home/shivesh/Desktop/Image2Jewel/catalogue/images";
-        catalogueIndexer.indexLocalCatalogue(path);
-        return ResponseEntity.ok("Bulk indexing started for: " + path);
+        // Catalogue path is now injected from environment or properties
+        catalogueIndexer.indexLocalCatalogue(cataloguePath);
+        return ResponseEntity.ok("Bulk indexing started for: " + cataloguePath);
     }
 
     @PostMapping("/search")
@@ -73,10 +75,10 @@ public class JewelryController {
         if (llmService != null) {
             try {
                 byte[] bytes = file.getBytes();
-                String base64 = java.util.Base64.getEncoder().encodeToString(bytes);
+                String base64 = resizeImageToBase64(bytes);
                 Image image = Image.builder()
                         .base64Data(base64)
-                        .mimeType(file.getContentType())
+                        .mimeType("image/jpeg")
                         .build();
 
                 criteria = llmService.findMatchingCriteria(category, text, image);
@@ -120,5 +122,43 @@ public class JewelryController {
 
         searchService.save(item);
         return ResponseEntity.ok("Indexed: " + name);
+    }
+
+    private String resizeImageToBase64(byte[] bytes) throws Exception {
+        try (java.io.InputStream is = new java.io.ByteArrayInputStream(bytes)) {
+            java.awt.image.BufferedImage originalImage = javax.imageio.ImageIO.read(is);
+            if (originalImage == null) {
+                return java.util.Base64.getEncoder().encodeToString(bytes);
+            }
+            
+            int maxDim = 512;
+            int width = originalImage.getWidth();
+            int height = originalImage.getHeight();
+            
+            if (width <= maxDim && height <= maxDim) {
+                return java.util.Base64.getEncoder().encodeToString(bytes);
+            }
+            
+            if (width > height) {
+                height = (int) (((double) maxDim / width) * height);
+                width = maxDim;
+            } else {
+                width = (int) (((double) maxDim / height) * width);
+                height = maxDim;
+            }
+            
+            java.awt.Image scaledImage = originalImage.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
+            java.awt.image.BufferedImage outputImage = new java.awt.image.BufferedImage(width, height, java.awt.image.BufferedImage.TYPE_INT_RGB);
+            
+            java.awt.Graphics2D g2d = outputImage.createGraphics();
+            g2d.setColor(java.awt.Color.WHITE);
+            g2d.fillRect(0, 0, width, height);
+            g2d.drawImage(scaledImage, 0, 0, null);
+            g2d.dispose();
+            
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+            javax.imageio.ImageIO.write(outputImage, "jpeg", baos);
+            return java.util.Base64.getEncoder().encodeToString(baos.toByteArray());
+        }
     }
 }

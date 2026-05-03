@@ -1,0 +1,54 @@
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    deploy:
+      resources:
+        limits:
+          memory: 450M
+    networks:
+      - jewel-network
+
+  backend:
+    build: ./backend
+    container_name: backend-api
+    restart: always
+    environment:
+      - SPRING_ELASTICSEARCH_URIS=http://elasticsearch:9200
+      - CATALOGUE_PATH=/app/catalogue/images
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    volumes:
+      - ./catalogue/images:/app/catalogue/images
+    depends_on:
+      - elasticsearch
+    deploy:
+      resources:
+        limits:
+          memory: 350M
+    networks:
+      - jewel-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./frontend/dist/browser:/usr/share/nginx/html:ro  # Assuming Angular build path
+      - ./catalogue/images:/app/catalogue/images:ro      # For serving images
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+    depends_on:
+      - backend
+    networks:
+      - jewel-network
+
+networks:
+  jewel-network:
+    driver: bridge

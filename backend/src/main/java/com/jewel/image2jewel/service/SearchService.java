@@ -63,7 +63,7 @@ public class SearchService {
                             .numCandidates(100)
                             .filter(f -> f
                                 .bool(b -> b
-                                    .must(m -> m.term(t -> t.field("category").value(criteria.category())))
+                                    .must(m -> m.term(t -> t.field("category").value(criteria.category().toLowerCase())))
                                     .should(sh -> sh.match(m -> m.field("description").query(criteria.metal())))
                                 )
                             )

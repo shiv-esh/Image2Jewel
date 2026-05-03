@@ -107,7 +107,7 @@ def download_jewelry_images(query="jewelry", limit=10, output_dir=None, access_k
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Robust Jewelry Image Crawler")
-    parser.add_argument("--query", type=str, default="jewelry")
+    parser.add_argument("--query", type=str, default=None, help="Specific category to search. If omitted, searches all standard categories.")
     parser.add_argument("--limit", type=int, default=10)
     parser.add_argument("--output", type=str, default=None)
     parser.add_argument("--key", type=str)
@@ -115,10 +115,14 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     
-    download_jewelry_images(
-        query=args.query, 
-        limit=args.limit, 
-        output_dir=args.output, 
-        access_key=args.key,
-        use_random=args.random
-    )
+    # Standard categories to use everywhere
+    categories = [args.query] if args.query else ["Ring", "Bracelet", "Necklace", "Earring"]
+    
+    for category in categories:
+        download_jewelry_images(
+            query=category, 
+            limit=args.limit, 
+            output_dir=args.output, 
+            access_key=args.key,
+            use_random=args.random
+        )

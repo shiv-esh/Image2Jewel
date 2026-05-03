@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-concierge',
@@ -9,7 +10,8 @@ import { HttpClient } from '@angular/common/http';
 export class ConciergeComponent {
   selectedFile: File | null = null;
   selectedImage: string | null = null;
-  queryText: string = '';
+  selectedCategory: string = 'Similar';
+  categories: string[] = ['Similar', 'Ring', 'Bracelet', 'Necklace', 'Earring'];
   results: any[] = [];
   loading: boolean = false;
 
@@ -48,13 +50,14 @@ export class ConciergeComponent {
     formData.append('image', this.selectedFile);
     
     let endpoint = '/api/jewelry/search';
-    if (this.queryText.toLowerCase().includes('match') || this.queryText.toLowerCase().includes('pair')) {
+    
+    if (this.selectedCategory !== 'Similar') {
       endpoint = '/api/jewelry/pair';
-      formData.append('category', this.extractCategory(this.queryText));
-      formData.append('text', this.queryText);
+      formData.append('category', this.selectedCategory);
+      formData.append('text', `Find a matching ${this.selectedCategory}`);
     }
 
-    this.http.post<any[]>(`http://localhost:8080${endpoint}`, formData)
+    this.http.post<any[]>(`${environment.apiUrl}${endpoint}`, formData)
       .subscribe({
         next: (res) => {
           this.results = res;
@@ -65,12 +68,5 @@ export class ConciergeComponent {
           this.loading = false;
         }
       });
-  }
-
-  private extractCategory(text: string): string {
-    if (text.toLowerCase().includes('earring')) return 'Earrings';
-    if (text.toLowerCase().includes('necklace')) return 'Necklace';
-    if (text.toLowerCase().includes('ring')) return 'Ring';
-    return 'Jewelry';
   }
 }

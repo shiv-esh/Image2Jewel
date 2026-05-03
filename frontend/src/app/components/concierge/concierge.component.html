@@ -15,8 +15,12 @@
         <img *ngIf="selectedImage" [src]="selectedImage" class="preview">
       </div>
 
-      <div class="chat-overlay">
-        <input type="text" [(ngModel)]="queryText" placeholder="e.g. Find matching earrings for this necklace..." (keyup.enter)="search()">
+      <div class="chat-overlay" style="display: flex; gap: 10px;">
+        <select [(ngModel)]="selectedCategory" class="glass-card" style="padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3); background: rgba(0, 0, 0, 0.6); color: white; flex: 1; outline: none; font-family: inherit;">
+          <option *ngFor="let cat of categories" [value]="cat" style="background: #111; color: white;">
+            {{ cat === 'Similar' ? 'Find Similar Items' : 'Find similar ' + cat }}
+          </option>
+        </select>
         <button class="btn-primary" (click)="search()">Discover</button>
       </div>
     </div>
@@ -25,7 +29,6 @@
       <h2 class="gold-text">Curated Recommendations</h2>
       <div class="masonry-grid">
         <div class="jewelry-item glass-card" *ngFor="let item of results">
-          <div class="similarity-badge">Match Score: {{item.score}}%</div>
           <img [src]="item.imageUrl" [alt]="item.name">
           <div class="details">
             <h3>{{item.name}}</h3>

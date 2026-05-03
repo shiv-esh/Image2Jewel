@@ -10,34 +10,31 @@ java {
     sourceCompatibility = '25'
 }
 
-
 repositories {
     mavenCentral()
 }
 
 ext {
     set('djlVersion', '0.27.0')
-    set('langchain4jVersion', '1.13.0-beta23')
+    // Reverting to the universally stable 0.x series to guarantee resolution
+    set('langchain4jVersion', '0.36.2')
 }
 
 dependencies {
-    // Native Gradle BOM support (replaces dependency-management plugin)
     implementation platform('org.springframework.boot:spring-boot-dependencies:4.0.6')
 
-    // Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 
-    // AI: Deep Java Library (DJL) for CLIP
     implementation "ai.djl:api:${djlVersion}"
     implementation "ai.djl.pytorch:pytorch-engine:${djlVersion}"
     implementation "ai.djl.pytorch:pytorch-model-zoo:${djlVersion}"
 
-    // LLM: LangChain4j for Gemini Integration
-    implementation "dev.langchain4j:langchain4j-spring-boot-starter:${langchain4jVersion}"
-    implementation "dev.langchain4j:langchain4j-google-ai-gemini-spring-boot-starter:${langchain4jVersion}"
+    // LLM: LangChain4j explicitly using 0.36.2
+    implementation "dev.langchain4j:langchain4j-core:${langchain4jVersion}"
+    implementation "dev.langchain4j:langchain4j:${langchain4jVersion}"
+    implementation "dev.langchain4j:langchain4j-open-ai:${langchain4jVersion}"
 
-    // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
