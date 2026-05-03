@@ -19,7 +19,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/jewelry")
-@CrossOrigin(origins = "*") // For POC simplicity
 public class JewelryController {
 
     private static final Logger logger = LoggerFactory.getLogger(JewelryController.class);

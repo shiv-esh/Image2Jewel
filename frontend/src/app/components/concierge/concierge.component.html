@@ -1,7 +1,7 @@
 <div class="concierge-container">
   <header>
-    <h1 class="gold-text">Image2Jewel Concierge</h1>
-    <p>Upload a piece of jewelry to find matches or ask for a pairing.</p>
+    <h1 class="gold-text">Image2Jewel</h1>
+    <p>Upload a picture of jewelry to find matches</p>
   </header>
 
   <main>
@@ -16,7 +16,8 @@
       </div>
 
       <div class="chat-overlay" style="display: flex; gap: 10px;">
-        <select [(ngModel)]="selectedCategory" class="glass-card" style="padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3); background: rgba(0, 0, 0, 0.6); color: white; flex: 1; outline: none; font-family: inherit;">
+        <select [(ngModel)]="selectedCategory" class="glass-card"
+          style="padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3); background: rgba(0, 0, 0, 0.6); color: white; flex: 1; outline: none; font-family: inherit;">
           <option *ngFor="let cat of categories" [value]="cat" style="background: #111; color: white;">
             {{ cat === 'Similar' ? 'Find Similar Items' : 'Find similar ' + cat }}
           </option>
