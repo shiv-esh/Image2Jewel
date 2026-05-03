@@ -14,6 +14,7 @@ export class ConciergeComponent {
   categories: string[] = ['Similar', 'Ring', 'Bracelet', 'Necklace', 'Earring'];
   results: any[] = [];
   loading: boolean = false;
+  apiUrl: string = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

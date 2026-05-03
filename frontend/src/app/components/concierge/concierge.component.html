@@ -29,7 +29,7 @@
       <h2 class="gold-text">Curated Recommendations</h2>
       <div class="masonry-grid">
         <div class="jewelry-item glass-card" *ngFor="let item of results">
-          <img [src]="item.imageUrl" [alt]="item.name">
+          <img [src]="apiUrl + item.imageUrl" [alt]="item.name">
           <div class="details">
             <h3>{{item.name}}</h3>
             <p>{{item.category}}</p>
