@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://13.204.81.65'
+  apiUrl: 'https://catharsis-wellness.duckdns.org'
 };
