@@ -1,0 +1,47 @@
+# ====================================================================
+# Image2Jewel Project Gitignore
+# ====================================================================
+
+# IDEs & System
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# --- BACKEND (Gradle / Java) ---
+backend/.gradle/
+backend/build/
+backend/bin/
+backend/.settings/
+backend/.project
+backend/.classpath
+backend/out/
+
+# --- FRONTEND (Angular / Node) ---
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.cache/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.editorconfig
+
+# --- CRAWLER (Python) ---
+crawler/__pycache__/
+crawler/*.pyc
+crawler/venv/
+crawler/.venv/
+crawler/.env
+crawler/images/
+
+# --- DOCKER ---
+.docker-data/
+docker-compose.override.yml
+
+# --- DATA ---
+catalogue/
+frontend/src/assets/catalogue/
+!frontend/src/assets/catalogue/.gitkeep

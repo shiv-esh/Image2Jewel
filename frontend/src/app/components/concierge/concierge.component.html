@@ -1,0 +1,38 @@
+<div class="concierge-container">
+  <header>
+    <h1 class="gold-text">Image2Jewel Concierge</h1>
+    <p>Upload a piece of jewelry to find matches or ask for a pairing.</p>
+  </header>
+
+  <main>
+    <div class="upload-section glass-card">
+      <div class="drop-zone" (click)="fileInput.click()" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
+        <input type="file" #fileInput (change)="onFileSelected($event)" hidden accept="image/*">
+        <div *ngIf="!selectedImage" class="prompt">
+          <i class="icon-upload"></i>
+          <p>Drop an image here or click to browse</p>
+        </div>
+        <img *ngIf="selectedImage" [src]="selectedImage" class="preview">
+      </div>
+
+      <div class="chat-overlay">
+        <input type="text" [(ngModel)]="queryText" placeholder="e.g. Find matching earrings for this necklace..." (keyup.enter)="search()">
+        <button class="btn-primary" (click)="search()">Discover</button>
+      </div>
+    </div>
+
+    <div class="results-section" *ngIf="results.length > 0">
+      <h2 class="gold-text">Curated Recommendations</h2>
+      <div class="masonry-grid">
+        <div class="jewelry-item glass-card" *ngFor="let item of results">
+          <div class="similarity-badge">Match Score: {{item.score}}%</div>
+          <img [src]="item.imageUrl" [alt]="item.name">
+          <div class="details">
+            <h3>{{item.name}}</h3>
+            <p>{{item.category}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
