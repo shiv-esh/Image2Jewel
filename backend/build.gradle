@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.0.6'
+}
+
+group = 'com.jewel'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '25'
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('djlVersion', '0.27.0')
+    set('langchain4jVersion', '1.13.0-beta23')
+}
+
+dependencies {
+    // Native Gradle BOM support (replaces dependency-management plugin)
+    implementation platform('org.springframework.boot:spring-boot-dependencies:4.0.6')
+
+    // Spring Boot
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+
+    // AI: Deep Java Library (DJL) for CLIP
+    implementation "ai.djl:api:${djlVersion}"
+    implementation "ai.djl.pytorch:pytorch-engine:${djlVersion}"
+    implementation "ai.djl.pytorch:pytorch-model-zoo:${djlVersion}"
+
+    // LLM: LangChain4j for Gemini Integration
+    implementation "dev.langchain4j:langchain4j-spring-boot-starter:${langchain4jVersion}"
+    implementation "dev.langchain4j:langchain4j-google-ai-gemini-spring-boot-starter:${langchain4jVersion}"
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
